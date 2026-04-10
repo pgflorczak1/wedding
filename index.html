@@ -150,6 +150,24 @@ body::before {
 .lb-nav.prev { left: -54px; }
 .lb-nav.next { right: -54px; }
 
+/* ADMIN */
+.admin-bar { display: none; max-width: 500px; margin: 0 auto 18px; padding: 10px 14px; border: 1px solid rgba(26,38,102,0.18); background: rgba(26,38,102,0.04); align-items: center; justify-content: space-between; gap: 12px; }
+.admin-bar.active { display: flex; }
+.admin-bar span { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink2); opacity: 0.7; }
+.admin-btn { padding: 8px 14px; border: 1px solid rgba(26,38,102,0.5); background: transparent; color: var(--ink); font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+.admin-toggle { position: absolute; top: 8px; right: 8px; z-index: 2; padding: 7px 10px; border: none; background: rgba(26,38,102,0.85); color: var(--cream); font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+.g-item:hover .admin-toggle { opacity: 1; }
+.g-item.is-hidden { opacity: 0.38; }
+.g-item.is-hidden::after { content: 'Ukryte'; position: absolute; top: 8px; left: 8px; background: rgba(26,38,102,0.88); color: var(--cream); padding: 5px 8px; font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+.admin-modal { position: fixed; inset: 0; background: rgba(8,10,32,0.88); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.admin-modal.open { display: flex; }
+.admin-card { width: min(420px, 100%); border: 1.5px solid var(--ink); background: var(--cream3); padding: 28px 24px; text-align: center; }
+.admin-card h3 { font-family: 'IM Fell English', serif; font-style: italic; font-size: 28px; margin-bottom: 8px; }
+.admin-card p { font-size: 15px; opacity: 0.68; margin-bottom: 18px; }
+.admin-card input { width: 100%; border: none; border-bottom: 1px solid rgba(26,38,102,0.35); background: transparent; padding: 10px 0; font-family: 'IM Fell DW Pica', serif; font-size: 18px; color: var(--ink); text-align: center; outline: none; }
+.admin-actions { display: flex; justify-content: center; gap: 10px; margin-top: 22px; }
+.admin-note { margin-top: 12px; min-height: 16px; font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #8b1a1a; }
+
 footer { text-align: center; padding: 36px 20px 28px; border-top: 1px solid rgba(26,38,102,0.15); margin-top: 40px; }
 footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink2); opacity: 0.3; }
 
@@ -210,7 +228,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
       <span class="div-line"></span>
     </div>
     <p class="hero-info">Kazimierz Dolny &nbsp;·&nbsp; 2–4 Października 2026</p>
-    <p class="hero-tagline">Podzielcie się swoim spojrzeniem na ten wyjątkowy dzień</p>
+    <p class="hero-tagline">Będzie nam bardzo miło, jeśli dodacie tu swoje zdjęcia</p>
 
     <svg class="ornament-sub" viewBox="0 0 480 20" xmlns="http://www.w3.org/2000/svg" fill="none">
       <g stroke="#1a2666" stroke-opacity="0.28" stroke-linecap="round">
@@ -234,7 +252,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
   <!-- UPLOAD -->
   <div id="panel-upload" class="panel active">
     <div class="sec-hdr">
-      <h2>Podziel się wspomnieniem</h2>
+      <h2>Dodajcie swoje zdjęcia</h2>
       <svg class="sec-orn" viewBox="0 0 150 10" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M10,5 L62,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
         <path d="M88,5 L140,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
@@ -244,7 +262,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
       </svg>
     </div>
     <div class="name-row">
-      <label>Twoje imię</label>
+      <label>Podpisz zdjęcia</label>
       <input type="text" id="uploaderName" placeholder="np. Marta i Tomek" maxlength="50">
     </div>
     <div class="drop-zone" id="dropZone">
@@ -256,15 +274,15 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
           <path d="M34,6 L34,18 M30,10 L34,6 L38,10" stroke-linecap="round"/>
         </svg>
       </div>
-      <p class="drop-title">Przeciągnij zdjęcia tutaj</p>
-      <p class="drop-sub">JPG · PNG · HEIC &nbsp;·&nbsp; do 20 MB każde</p>
+      <p class="drop-title">Dodajcie zdjęcia z telefonu</p>
+      <p class="drop-sub">JPG · PNG &nbsp;·&nbsp; do 20 MB każde</p>
       <label class="choose-btn" for="fileInput">Wybierz pliki</label>
-      <input type="file" id="fileInput" multiple accept="image/*">
+      <input type="file" id="fileInput" multiple accept="image/jpeg,image/png">
     </div>
     <div class="error-msg" id="errorMsg"></div>
     <div class="preview-grid" id="previewGrid"></div>
     <div class="submit-wrap" id="submitWrap" style="display:none">
-      <button class="submit-btn" id="submitBtn" onclick="submitPhotos()">Wyślij do galerii</button>
+      <button class="submit-btn" id="submitBtn" onclick="submitPhotos()">Dodaj do galerii</button>
       <div class="progress-wrap" id="progressWrap" style="display:none">
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
         <p class="progress-text" id="progressText">Przesyłanie...</p>
@@ -275,7 +293,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
   <!-- GALLERY -->
   <div id="panel-gallery" class="panel">
     <div class="sec-hdr">
-      <h2>Wspólna galeria</h2>
+      <h2>Nasza galeria</h2>
       <svg class="sec-orn" viewBox="0 0 150 10" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M10,5 L62,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
         <path d="M88,5 L140,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
@@ -284,19 +302,23 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
         <circle cx="140" cy="5" r="1.5" fill="#1a2666" fill-opacity="0.2"/>
       </svg>
     </div>
+    <div class="admin-bar" id="adminBar">
+      <span>Tryb moderacji jest włączony</span>
+      <button class="admin-btn" onclick="logoutAdmin()">Wyłącz</button>
+    </div>
     <p class="gal-count" id="galCount"></p>
     <div class="gal-loading" id="galLoading">Ładowanie wspomnień...</div>
     <div class="gal-grid" id="galGrid"></div>
     <div class="gal-empty" id="galEmpty" style="display:none">
-      <p>Galeria czeka na pierwsze wspomnienia</p>
-      <span>Bądź pierwszą osobą, która doda zdjęcie</span>
+      <p>Czekamy na pierwsze zdjęcia</p>
+      <span>Dodajcie coś od siebie</span>
     </div>
   </div>
 
   <!-- QR -->
   <div id="panel-qr" class="panel">
     <div class="sec-hdr">
-      <h2>Kod QR dla gości</h2>
+      <h2>Zeskanuj i dodaj zdjęcia</h2>
       <svg class="sec-orn" viewBox="0 0 150 10" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M10,5 L62,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
         <path d="M88,5 L140,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
@@ -307,17 +329,17 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
     </div>
     <div class="qr-wrap">
       <div class="qr-card">
-        <h3>Wspólna galeria</h3>
-        <p class="sub">Wydrukuj i umieść na stolikach</p>
+        <h3>Dołącz do galerii</h3>
+        <p class="sub">Zeskanuj i dodaj swoje zdjęcia</p>
         <div id="qrcode"></div>
         <p class="qr-url" id="qrUrl"></p>
         <button class="dl-btn" onclick="downloadQR()">Pobierz do druku</button>
       </div>
       <div class="qr-steps">
-        <div class="qr-step"><span class="step-num">I</span><span class="step-txt"><em>Pobierz i wydrukuj</em> kod QR — umieść na karteczkach przy stolikach</span></div>
-        <div class="qr-step"><span class="step-num">II</span><span class="step-txt"><em>Gość skanuje</em> telefonem — trafia prosto na tę stronę bez instalowania aplikacji</span></div>
-        <div class="qr-step"><span class="step-num">III</span><span class="step-txt"><em>Wgrywa zdjęcia</em> ze swojego telefonu, podpisując je imieniem</span></div>
-        <div class="qr-step"><span class="step-num">IV</span><span class="step-txt"><em>Wspólna galeria</em> rośnie przez cały wieczór — pamiątka dla Was i Waszych gości</span></div>
+        <div class="qr-step"><span class="step-num">I</span><span class="step-txt"><em>Zeskanuj kod</em> telefonem</span></div>
+        <div class="qr-step"><span class="step-num">II</span><span class="step-txt"><em>Dodaj zdjęcia</em> z tego dnia</span></div>
+        <div class="qr-step"><span class="step-num">III</span><span class="step-txt"><em>Podpisz je</em> swoim imieniem</span></div>
+        <div class="qr-step"><span class="step-num">IV</span><span class="step-txt"><em>Zajrzyj do galerii</em> i oglądaj zdjęcia razem z nami</span></div>
       </div>
     </div>
   </div>
@@ -333,7 +355,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
       <circle cx="210" cy="11" r="1.5" fill="#1a2666" fill-opacity="0.25" stroke="none"/>
     </g>
   </svg>
-  <p>Ola &amp; Paweł · Kazimierz Dolny · 2–4 X 2026</p>
+  <p id="adminTrigger">Ola &amp; Paweł · Kazimierz Dolny · 2–4 X 2026</p>
 </footer>
 
 <div class="lightbox" id="lightbox" onclick="lbBgClick(event)">
@@ -346,10 +368,23 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
   </div>
 </div>
 
+<div class="admin-modal" id="adminModal" onclick="closeAdminModal(event)">
+  <div class="admin-card">
+    <h3>Tryb moderacji</h3>
+    <p>Wpisz hasło, aby zarządzać galerią.</p>
+    <input type="password" id="adminPassword" placeholder="Hasło">
+    <div class="admin-actions">
+      <button class="choose-btn" onclick="loginAdmin()">Wejdź</button>
+      <button class="choose-btn" onclick="hideAdminModal()">Anuluj</button>
+    </div>
+    <div class="admin-note" id="adminNote"></div>
+  </div>
+</div>
+
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, onSnapshot, orderBy, query, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -368,8 +403,13 @@ const storage = getStorage(app);
 // ── STATE ──
 let selectedFiles = [];
 let galleryPhotos = [];
+let renderedPhotos = [];
 let lbIdx = 0;
 let unsubscribe = null;
+let adminMode = false;
+let adminClicks = 0;
+let adminClickTimer = null;
+const ADMIN_PASSWORD = '********';
 
 // ── TABS ──
 window.showTab = function(name) {
@@ -384,6 +424,8 @@ window.showTab = function(name) {
 // ── UPLOAD ──
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
+const allowedTypes = ['image/jpeg', 'image/png'];
+const maxFileSize = 20 * 1024 * 1024;
 
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
@@ -391,8 +433,20 @@ dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.
 fileInput.addEventListener('change', e => handleFiles(e.target.files));
 
 function handleFiles(files) {
+  const errorMsg = document.getElementById('errorMsg');
+  errorMsg.style.display = 'none';
+
   Array.from(files).forEach(file => {
-    if (!file.type.startsWith('image/')) return;
+    if (!allowedTypes.includes(file.type)) {
+      errorMsg.textContent = 'Dodawaj proszę pliki JPG albo PNG.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+    if (file.size > maxFileSize) {
+      errorMsg.textContent = 'Jedno ze zdjęć ma więcej niż 20 MB.';
+      errorMsg.style.display = 'block';
+      return;
+    }
     const idx = selectedFiles.push(file) - 1;
     const r = new FileReader();
     r.onload = e => addPreview(e.target.result, idx);
@@ -460,6 +514,7 @@ window.submitPhotos = async function() {
 
       // Compress
       const compressed = await compressImage(file);
+      if (!compressed) throw new Error('Nie udało się przygotować zdjęcia do wysłania.');
 
       // Upload to Storage
       const fileName = `photos/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
@@ -471,6 +526,7 @@ window.submitPhotos = async function() {
       await addDoc(collection(db, 'photos'), {
         url,
         author: name,
+        hidden: false,
         timestamp: Date.now(),
         time: new Date().toLocaleString('pl-PL', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})
       });
@@ -484,7 +540,7 @@ window.submitPhotos = async function() {
     errorMsg.textContent = 'Wystąpił błąd podczas przesyłania. Spróbuj ponownie.';
     errorMsg.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = 'Wyślij do galerii';
+    btn.textContent = 'Dodaj do galerii';
     progressWrap.style.display = 'none';
   }
 };
@@ -503,38 +559,67 @@ function showSuccess(n) {
         </g>
       </svg>
       <h3>Dziękujemy za wspomnienia!</h3>
-      <p>Dodałeś ${n} zdjęci${n===1?'e':n<5?'a':''} do galerii weselnej.</p>
+      <p>Dziękujemy, że jesteście z nami. Dodano ${pluralWithNoun(n)}.</p>
       <button class="reset-btn" onclick="location.reload()">Dodaj kolejne</button>
     </div>`;
 }
 
 // ── GALLERY (real-time) ──
-function startGalleryListener() {
+function startGalleryListener(forceRefresh = false) {
   const galLoading = document.getElementById('galLoading');
   const galGrid = document.getElementById('galGrid');
   const galEmpty = document.getElementById('galEmpty');
   const galCount = document.getElementById('galCount');
 
-  if (unsubscribe) return; // already listening
+  if (forceRefresh && unsubscribe) {
+    unsubscribe();
+    unsubscribe = null;
+  }
+  if (unsubscribe) return;
 
   const q = query(collection(db, 'photos'), orderBy('timestamp', 'desc'));
 
   unsubscribe = onSnapshot(q, snapshot => {
     galLoading.style.display = 'none';
-    galleryPhotos = snapshot.docs.map(doc => doc.data());
+    galleryPhotos = snapshot.docs.map(photoDoc => ({ id: photoDoc.id, ...photoDoc.data() }));
     galGrid.innerHTML = '';
-    galCount.textContent = galleryPhotos.length + ' ' + plural(galleryPhotos.length);
+    renderedPhotos = adminMode ? galleryPhotos : galleryPhotos.filter(photo => !photo.hidden);
+    galCount.textContent = pluralWithNoun(renderedPhotos.length);
 
-    if (!galleryPhotos.length) {
+    if (!renderedPhotos.length) {
       galEmpty.style.display = 'block';
       return;
     }
     galEmpty.style.display = 'none';
 
-    galleryPhotos.forEach((p, i) => {
+    renderedPhotos.forEach((p, i) => {
       const d = document.createElement('div');
       d.className = 'g-item';
-      d.innerHTML = `<img src="${p.url}" alt="" loading="lazy"><div class="g-caption">${p.author} · ${p.time}</div>`;
+      if (p.hidden) d.classList.add('is-hidden');
+
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.alt = `Zdjęcie dodane przez ${p.author}`;
+      img.loading = 'lazy';
+
+      const caption = document.createElement('div');
+      caption.className = 'g-caption';
+      caption.textContent = `${p.author} · ${p.time}`;
+
+      d.appendChild(img);
+      d.appendChild(caption);
+
+      if (adminMode) {
+        const adminToggle = document.createElement('button');
+        adminToggle.className = 'admin-toggle';
+        adminToggle.textContent = p.hidden ? 'Przywróć' : 'Ukryj';
+        adminToggle.onclick = async e => {
+          e.stopPropagation();
+          await togglePhotoVisibility(p.id, !p.hidden);
+        };
+        d.appendChild(adminToggle);
+      }
+
       d.onclick = () => openLB(i);
       galGrid.appendChild(d);
     });
@@ -546,8 +631,18 @@ function startGalleryListener() {
 
 function plural(n) {
   if (n===1) return 'zdjęcie';
-  if (n>=2&&n<=4) return 'zdjęcia';
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'zdjęcia';
   return 'zdjęć';
+}
+
+function pluralWithNoun(n) {
+  return `${n} ${plural(n)}`;
+}
+
+async function togglePhotoVisibility(photoId, hidden) {
+  await updateDoc(doc(db, 'photos', photoId), { hidden });
 }
 
 // ── LIGHTBOX ──
@@ -557,19 +652,84 @@ function openLB(i) {
   document.body.style.overflow = 'hidden';
 }
 function updateLB() {
-  const p = galleryPhotos[lbIdx];
+  const p = renderedPhotos[lbIdx];
+  if (!p) return;
   document.getElementById('lbImg').src = p.url;
   document.getElementById('lbCap').textContent = `${p.author} · ${p.time}`;
 }
 window.closeLB = function() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; };
 window.lbBgClick = function(e) { if (e.target===document.getElementById('lightbox')) window.closeLB(); };
-window.lbNav = function(d) { lbIdx = (lbIdx+d+galleryPhotos.length)%galleryPhotos.length; updateLB(); };
+window.lbNav = function(d) {
+  if (!renderedPhotos.length) return;
+  lbIdx = (lbIdx + d + renderedPhotos.length) % renderedPhotos.length;
+  updateLB();
+};
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lightbox').classList.contains('open')) return;
   if (e.key==='ArrowRight') window.lbNav(1);
   if (e.key==='ArrowLeft') window.lbNav(-1);
   if (e.key==='Escape') window.closeLB();
 });
+
+// ── ADMIN ──
+const adminTrigger = document.getElementById('adminTrigger');
+const adminModal = document.getElementById('adminModal');
+const adminPassword = document.getElementById('adminPassword');
+const adminNote = document.getElementById('adminNote');
+const adminBar = document.getElementById('adminBar');
+
+adminTrigger.addEventListener('click', () => {
+  adminClicks += 1;
+  clearTimeout(adminClickTimer);
+  adminClickTimer = setTimeout(() => { adminClicks = 0; }, 1200);
+  if (adminClicks >= 5) {
+    adminClicks = 0;
+    showAdminModal();
+  }
+});
+
+function showAdminModal() {
+  adminModal.classList.add('open');
+  adminNote.textContent = '';
+  adminPassword.value = '';
+  setTimeout(() => adminPassword.focus(), 20);
+}
+
+window.hideAdminModal = function() {
+  adminModal.classList.remove('open');
+};
+
+window.closeAdminModal = function(e) {
+  if (e.target === adminModal) hideAdminModal();
+};
+
+window.loginAdmin = function() {
+  if (adminPassword.value !== ADMIN_PASSWORD) {
+    adminNote.textContent = 'Nieprawidłowe hasło.';
+    return;
+  }
+  adminMode = true;
+  sessionStorage.setItem('wedding-admin', '1');
+  adminBar.classList.add('active');
+  hideAdminModal();
+  if (document.getElementById('panel-gallery').classList.contains('active')) startGalleryListener(true);
+};
+
+window.logoutAdmin = function() {
+  adminMode = false;
+  sessionStorage.removeItem('wedding-admin');
+  adminBar.classList.remove('active');
+  if (document.getElementById('panel-gallery').classList.contains('active')) startGalleryListener(true);
+};
+
+adminPassword.addEventListener('keydown', e => {
+  if (e.key === 'Enter') loginAdmin();
+});
+
+if (sessionStorage.getItem('wedding-admin') === '1') {
+  adminMode = true;
+  adminBar.classList.add('active');
+}
 
 // ── QR ──
 window.generateQR = function() {
@@ -611,7 +771,7 @@ window.downloadQR = function() {
   ctx.strokeRect(137,167,206,206);
   ctx.globalAlpha = 1; ctx.fillStyle = '#1a2666';
   ctx.font = 'italic 16px Georgia'; ctx.globalAlpha = 0.6;
-  ctx.fillText('Podziel się zdjęciami z naszego wesela', 240, 404);
+  ctx.fillText('Dodaj swoje zdjęcia z naszego wesela', 240, 404);
   ctx.font = '10px Georgia'; ctx.globalAlpha = 0.35;
   ctx.fillText('ZESKANUJ TELEFONEM', 240, 424);
   const link = document.createElement('a');
