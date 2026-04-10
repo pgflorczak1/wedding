@@ -167,6 +167,7 @@ body::before {
 .admin-card input { width: 100%; border: none; border-bottom: 1px solid rgba(26,38,102,0.35); background: transparent; padding: 10px 0; font-family: 'IM Fell DW Pica', serif; font-size: 18px; color: var(--ink); text-align: center; outline: none; }
 .admin-actions { display: flex; justify-content: center; gap: 10px; margin-top: 22px; }
 .admin-note { margin-top: 12px; min-height: 16px; font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #8b1a1a; }
+.admin-note.success { color: var(--ink2); }
 
 footer { text-align: center; padding: 36px 20px 28px; border-top: 1px solid rgba(26,38,102,0.15); margin-top: 40px; }
 footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink2); opacity: 0.3; }
@@ -691,12 +692,15 @@ adminTrigger.addEventListener('click', () => {
 function showAdminModal() {
   adminModal.classList.add('open');
   adminNote.textContent = '';
+  adminNote.classList.remove('success');
   adminPassword.value = '';
   setTimeout(() => adminPassword.focus(), 20);
 }
 
 window.hideAdminModal = function() {
   adminModal.classList.remove('open');
+  adminNote.textContent = '';
+  adminNote.classList.remove('success');
 };
 
 window.closeAdminModal = function(e) {
@@ -705,14 +709,20 @@ window.closeAdminModal = function(e) {
 
 window.loginAdmin = function() {
   if (adminPassword.value !== ADMIN_PASSWORD) {
+    adminNote.classList.remove('success');
     adminNote.textContent = 'Nieprawidłowe hasło.';
     return;
   }
   adminMode = true;
   sessionStorage.setItem('wedding-admin', '1');
   adminBar.classList.add('active');
-  hideAdminModal();
-  if (document.getElementById('panel-gallery').classList.contains('active')) startGalleryListener(true);
+  adminNote.classList.add('success');
+  adminNote.textContent = 'Tryb moderacji włączony.';
+  setTimeout(() => {
+    hideAdminModal();
+    showTab('gallery');
+    startGalleryListener(true);
+  }, 250);
 };
 
 window.logoutAdmin = function() {
@@ -723,7 +733,7 @@ window.logoutAdmin = function() {
 };
 
 adminPassword.addEventListener('keydown', e => {
-  if (e.key === 'Enter') loginAdmin();
+  if (e.key === 'Enter') window.loginAdmin();
 });
 
 if (sessionStorage.getItem('wedding-admin') === '1') {
