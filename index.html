@@ -45,11 +45,12 @@ body::before {
 .ornament-sub { display: block; width: 100%; max-width: 480px; margin: 18px auto 0; opacity: 0; animation: inkFade 1s ease 1.4s forwards; }
 
 /* TABS */
-.tabs-wrap { display: flex; justify-content: center; margin: 30px auto 0; max-width: 560px; border: 1.5px solid var(--ink); opacity: 0; animation: inkFade 1s ease 1.5s forwards; }
-.tab { flex: 1; padding: 13px 8px; border: none; background: transparent; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); opacity: 0.45; cursor: pointer; transition: all 0.3s; }
+.tabs-wrap { display: flex; justify-content: center; flex-wrap: wrap; margin: 30px auto 0; max-width: 700px; border: 1.5px solid var(--ink); opacity: 0; animation: inkFade 1s ease 1.5s forwards; }
+.tab { flex: 1 1 170px; padding: 13px 8px; border: none; background: transparent; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); opacity: 0.45; cursor: pointer; transition: all 0.3s; }
 .tab + .tab { border-left: 1px solid rgba(26,38,102,0.25); }
 .tab.active { background: var(--ink); color: var(--cream); opacity: 1; }
 .tab:hover:not(.active) { opacity: 0.75; background: rgba(26,38,102,0.06); }
+@media(max-width:560px){ .tab { flex-basis: 50%; } .tab:nth-child(odd) { border-left: none; } }
 
 /* PANELS */
 .panel { display: none; padding: 36px 6px 16px; animation: inkFade 0.45s ease forwards; }
@@ -168,6 +169,14 @@ body::before {
 .admin-note { margin-top: 12px; min-height: 16px; font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #8b1a1a; }
 .admin-note.success { color: var(--ink2); }
 
+.info-shell { max-width: 680px; margin: 0 auto; }
+.info-card { padding: 26px; border: 1px solid rgba(26,38,102,0.16); background: rgba(250,246,238,0.62); margin-bottom: 24px; }
+.info-card h3 { font-family: 'IM Fell English', serif; font-style: italic; font-size: 28px; margin-bottom: 8px; }
+.info-card p { font-size: 17px; line-height: 1.7; opacity: 0.82; }
+.info-address { margin-top: 14px; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink2); opacity: 0.7; }
+.map-frame { overflow: hidden; border: 1px solid rgba(26,38,102,0.14); background: var(--cream3); }
+.map-frame iframe { width: 100%; height: 340px; border: 0; display: block; }
+
 footer { text-align: center; padding: 36px 20px 28px; border-top: 1px solid rgba(26,38,102,0.15); margin-top: 40px; }
 footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink2); opacity: 0.3; }
 
@@ -244,6 +253,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
     <div class="tabs-wrap">
       <button class="tab active" onclick="showTab('upload')">Dodaj zdjęcia</button>
       <button class="tab" onclick="showTab('gallery')">Galeria</button>
+      <button class="tab" onclick="showTab('info')">Info</button>
       <button class="tab" onclick="showTab('qr')">Kod QR</button>
     </div>
   </div>
@@ -311,6 +321,31 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
     <div class="gal-empty" id="galEmpty" style="display:none">
       <p>Czekamy na pierwsze zdjęcia</p>
       <span>Dodajcie coś od siebie</span>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div id="panel-info" class="panel">
+    <div class="sec-hdr">
+      <h2>Hotel i dojazd</h2>
+      <svg class="sec-orn" viewBox="0 0 150 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10,5 L62,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
+        <path d="M88,5 L140,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
+        <circle cx="75" cy="5" r="3" fill="#1a2666" fill-opacity="0.22"/>
+        <circle cx="10" cy="5" r="1.5" fill="#1a2666" fill-opacity="0.2"/>
+        <circle cx="140" cy="5" r="1.5" fill="#1a2666" fill-opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="info-shell">
+      <div class="info-card">
+        <h3>Folwark Walencja</h3>
+        <p>Jeśli nocujecie na miejscu albo chcecie łatwo trafić do hotelu, poniżej macie mapę i szybki link do nawigacji.</p>
+        <p class="info-address">Góry 16 · 24-120 Kazimierz Dolny</p>
+        <a class="dl-btn" href="https://www.google.com/maps/search/?api=1&query=Folwark+Walencja%2C+G%C3%B3ry+16%2C+24-120+Kazimierz+Dolny" target="_blank" rel="noreferrer">Otwórz w mapach</a>
+      </div>
+      <div class="map-frame">
+        <iframe title="Mapa Folwark Walencja" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Folwark%20Walencja%2C%20G%C3%B3ry%2016%2C%2024-120%20Kazimierz%20Dolny&output=embed"></iframe>
+      </div>
     </div>
   </div>
 
@@ -412,7 +447,7 @@ const ADMIN_PASSWORD = '********';
 
 // ── TABS ──
 window.showTab = function(name) {
-  ['upload','gallery','qr'].forEach((n,i) => {
+  ['upload','gallery','info','qr'].forEach((n,i) => {
     document.querySelectorAll('.tab')[i].classList.toggle('active', n===name);
     document.getElementById('panel-'+n).classList.toggle('active', n===name);
   });
