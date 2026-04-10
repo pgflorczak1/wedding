@@ -177,6 +177,14 @@ body::before {
 .map-frame { overflow: hidden; border: 1px solid rgba(26,38,102,0.14); background: var(--cream3); }
 .map-frame iframe { width: 100%; height: 340px; border: 0; display: block; }
 
+.guest-shell { max-width: 620px; margin: 0 auto; }
+.guest-form { margin-bottom: 26px; padding: 24px; border: 1px solid rgba(26,38,102,0.16); background: rgba(250,246,238,0.62); }
+.guest-form textarea { width: 100%; min-height: 130px; resize: vertical; margin-bottom: 14px; border: 1px solid rgba(26,38,102,0.24); background: rgba(250,246,238,0.65); padding: 10px 12px; font-family: 'IM Fell DW Pica', serif; font-size: 16px; color: var(--ink); outline: none; }
+.guest-list { display: grid; gap: 14px; }
+.guest-entry { padding: 20px 18px; border: 1px solid rgba(26,38,102,0.14); background: rgba(255,255,255,0.32); }
+.guest-entry p { font-size: 17px; line-height: 1.6; margin-bottom: 10px; }
+.guest-meta { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink2); opacity: 0.6; }
+
 footer { text-align: center; padding: 36px 20px 28px; border-top: 1px solid rgba(26,38,102,0.15); margin-top: 40px; }
 footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink2); opacity: 0.3; }
 
@@ -253,6 +261,7 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
     <div class="tabs-wrap">
       <button class="tab active" onclick="showTab('upload')">Dodaj zdjęcia</button>
       <button class="tab" onclick="showTab('gallery')">Galeria</button>
+      <button class="tab" onclick="showTab('guestbook')">Księga gości</button>
       <button class="tab" onclick="showTab('info')">Info</button>
       <button class="tab" onclick="showTab('qr')">Kod QR</button>
     </div>
@@ -321,6 +330,39 @@ footer p { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; te
     <div class="gal-empty" id="galEmpty" style="display:none">
       <p>Czekamy na pierwsze zdjęcia</p>
       <span>Dodajcie coś od siebie</span>
+    </div>
+  </div>
+
+  <!-- GUESTBOOK -->
+  <div id="panel-guestbook" class="panel">
+    <div class="sec-hdr">
+      <h2>Księga gości</h2>
+      <svg class="sec-orn" viewBox="0 0 150 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10,5 L62,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
+        <path d="M88,5 L140,5" stroke="#1a2666" stroke-opacity="0.3" stroke-width="0.8"/>
+        <circle cx="75" cy="5" r="3" fill="#1a2666" fill-opacity="0.22"/>
+        <circle cx="10" cy="5" r="1.5" fill="#1a2666" fill-opacity="0.2"/>
+        <circle cx="140" cy="5" r="1.5" fill="#1a2666" fill-opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="guest-shell">
+      <div class="guest-form">
+        <div class="name-row">
+          <label>Podpis</label>
+          <input type="text" id="guestbookName" placeholder="np. Asia i Kuba" maxlength="50">
+        </div>
+        <label class="name-row label">Wiadomość</label>
+        <textarea id="guestbookMessage" maxlength="400" placeholder="Zostawcie nam kilka słów na pamiątkę"></textarea>
+        <div class="submit-wrap">
+          <button class="submit-btn" onclick="submitGuestbookEntry()">Dodaj wpis</button>
+        </div>
+      </div>
+      <div class="gal-loading" id="guestbookLoading">Ładowanie wpisów...</div>
+      <div class="guest-list" id="guestbookList"></div>
+      <div class="gal-empty" id="guestbookEmpty" style="display:none">
+        <p>Księga gości czeka na pierwszy wpis</p>
+        <span>Zostawcie nam kilka słów</span>
+      </div>
     </div>
   </div>
 
@@ -438,8 +480,10 @@ const storage = getStorage(app);
 let selectedFiles = [];
 let galleryPhotos = [];
 let renderedPhotos = [];
+let guestbookEntries = [];
 let lbIdx = 0;
 let unsubscribe = null;
+let guestbookUnsubscribe = null;
 let adminMode = false;
 let adminClicks = 0;
 let adminClickTimer = null;
@@ -447,11 +491,12 @@ const ADMIN_PASSWORD = '********';
 
 // ── TABS ──
 window.showTab = function(name) {
-  ['upload','gallery','info','qr'].forEach((n,i) => {
+  ['upload','gallery','guestbook','info','qr'].forEach((n,i) => {
     document.querySelectorAll('.tab')[i].classList.toggle('active', n===name);
     document.getElementById('panel-'+n).classList.toggle('active', n===name);
   });
   if (name === 'gallery') startGalleryListener();
+  if (name === 'guestbook') startGuestbookListener();
   if (name === 'qr') generateQR();
 };
 
@@ -682,6 +727,63 @@ function pluralWithNoun(n) {
 
 async function togglePhotoVisibility(photoId, hidden) {
   await updateDoc(doc(db, 'photos', photoId), { hidden });
+}
+
+// ── GUESTBOOK ──
+window.submitGuestbookEntry = async function() {
+  const nameInput = document.getElementById('guestbookName');
+  const messageInput = document.getElementById('guestbookMessage');
+  const author = nameInput.value.trim() || 'Gość';
+  const message = messageInput.value.trim();
+  if (!message) return;
+  await addDoc(collection(db, 'guestbook'), {
+    author,
+    message,
+    timestamp: Date.now(),
+    time: new Date().toLocaleString('pl-PL', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})
+  });
+  messageInput.value = '';
+};
+
+function startGuestbookListener(forceRefresh = false) {
+  const guestbookLoading = document.getElementById('guestbookLoading');
+  if (forceRefresh && guestbookUnsubscribe) {
+    guestbookUnsubscribe();
+    guestbookUnsubscribe = null;
+  }
+  if (guestbookUnsubscribe) return;
+  const q = query(collection(db, 'guestbook'), orderBy('timestamp', 'desc'));
+  guestbookUnsubscribe = onSnapshot(q, snapshot => {
+    guestbookLoading.style.display = 'none';
+    guestbookEntries = snapshot.docs.map(entryDoc => ({ id: entryDoc.id, ...entryDoc.data() }));
+    renderGuestbook();
+  }, err => {
+    guestbookLoading.textContent = 'Nie udało się załadować wpisów.';
+    console.error(err);
+  });
+}
+
+function renderGuestbook() {
+  const list = document.getElementById('guestbookList');
+  const empty = document.getElementById('guestbookEmpty');
+  list.innerHTML = '';
+  if (!guestbookEntries.length) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  guestbookEntries.forEach(entry => {
+    const item = document.createElement('article');
+    item.className = 'guest-entry';
+    const text = document.createElement('p');
+    text.textContent = entry.message;
+    const meta = document.createElement('div');
+    meta.className = 'guest-meta';
+    meta.textContent = `${entry.author} · ${entry.time}`;
+    item.appendChild(text);
+    item.appendChild(meta);
+    list.appendChild(item);
+  });
 }
 
 // ── LIGHTBOX ──
